@@ -1,3 +1,16 @@
+body {
+  background: #FEFEFE !important;
+}
+.claro .dijitToolbar .dijitButtonNode {
+  color: #444444 !important;
+}
+#toolbarContainer .dijitToolbar {
+    background: #dcdcdc  !important; /* for non-css3 browsers */
+  border-bottom: 1px solid #989898  !important;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#CCCCCC', GradientType=0) !important; /* for IE */
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#CCC)) !important; /* for webkit browsers */
+  background: -moz-linear-gradient(top,  #fff,  #CCC) !important; /* for firefox 3.6+ */
+}
 #timeSliderDiv {
   top: 450px !important;
   left: 7px !important;
@@ -349,7 +362,7 @@ button.ui-state-active {
   background: #98D48B;
   background: -moz-linear-gradient(top, #98D48B 0%, #4CA035 10%, #2E7A0F 50%, #1E6B00 50%, #194C00 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#98D48B), color-stop(10%,#4CA035), color-stop(50%,#2E7A0F), color-stop(50%,#1E6B00), color-stop(100%,#194C00));
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#98D48B', endColorstr='#1D5A00',GradientType=0 ); BACKGROUND: #98d48b
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#98D48B', endColorstr='#1D5A00',GradientType=0 ); 
   /*background-color: #98D48B !important;
   background: #98D48B !important;*/ 
   color: white;
@@ -407,10 +420,10 @@ span.dateText {
  *  slider stuff
  */
 .esriTimeSlider .ts {
-  padding-top: 10px !important;
-  margin: 3px !important;
-  width: 718px !important;
-  margin-left: -9px !important;
+  padding-top: 28px !important;
+  margin: 8px !important;
+  width: 712px !important;
+  margin-left: -6px !important;
 }
 div#overviewSlider {
   width: 100%;
