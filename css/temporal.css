@@ -20,8 +20,9 @@ body {
   background: -moz-linear-gradient(top,  #fff,  #CCC) !important; /* for firefox 3.6+ */
 }
 #timeSliderDiv {
-  top: 450px !important;
   left: 7px !important;
+  position:absolute;
+  bottom: 41px !important;
 }
 div#chartsContainer {
   width: 100%;

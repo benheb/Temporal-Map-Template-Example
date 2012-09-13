@@ -102,14 +102,14 @@
       // Called after the FeatureLayer finishes loading.
       function initSlider(results) {
         var map = this;
-        timeSlider = new myModules.TimeSliderGeoiqExt({style: "width: 760px;top:450px"},dojo.byId("timeSliderDiv"));
+        timeSlider = new myModules.TimeSliderGeoiqExt({style: "width: 760px; display:none"},dojo.byId("timeSliderDiv"));
         map.setTimeSlider(timeSlider);
         
         var timeExtent = new esri.TimeExtent();
         timeExtent.startTime = new Date("2002/06/01 00:04:00 UTC");
         timeExtent.endTime = new Date("2002/06/29 23:59:00 UTC");
         timeSlider.setThumbCount(2);
-        timeSlider.createTimeStopsByTimeInterval(timeExtent,7,'esriTimeUnitsHours');
+        timeSlider.createTimeStopsByTimeInterval(timeExtent,5,'esriTimeUnitsHours');
         timeSlider.setThumbIndexes([0,5]);
         timeSlider.setThumbMovingRate(200);
         timeSlider.numberBins = timeSlider.timeStops.length-1;

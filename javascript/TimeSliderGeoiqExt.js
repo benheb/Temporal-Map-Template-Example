@@ -83,6 +83,16 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
   
   initSlider: function() {
     this.inherited(arguments);
+    var sliderDiv = dojo.byId( "timeSliderDiv" )
+    sliderDiv.removeAttribute("style");
+    dojo.style(sliderDiv, {
+        'width': '760px',
+        'display': 'block',
+        'left': '0px',
+        'bottom': '46px',
+        'position': 'absolute'
+    });
+    
     this.features = timeSlider.features;
     this.fullTimeExtent = timeSlider.fullTimeExtent;
     this._wire();
@@ -158,6 +168,8 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
       self.setPlayMode( event.target.value );
     });
     
+    dojo.connect(window, 'onclick', self.positionSlider())
+    
     dojo.query( "#resolutionChooser" ).onclick( function( event ) {
       
       if ( dojo.hasClass( event.target, 'ui-state-disabled' ) ) return;
@@ -176,6 +188,7 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
    
      dojo.query( "#resolutionChooser button.ui-state-active" ).removeClass( "ui-state-active" );
      dojo.query( "div#resolutionChooser button#"+ self.focusResolution).addClass( "ui-state-active" );
+     
     });
   
     
@@ -184,13 +197,25 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
     
   },
   
+  positionSlider: function() {
+    var sliderDiv = dojo.byId( "timeSliderDiv" )
+    sliderDiv.removeAttribute("style");
+    dojo.style(sliderDiv, {
+        'width': '760px',
+        'display': 'block',
+        'left': '0px',
+        'bottom': '46px',
+        'position': 'absolute'
+    });
+  },
+  
   _recalculateBins: function(res) {
     var self = this;
     timeSlider.bins = [];
     var timeExtent = this.fullTimeExtent,
         features = self.features;
         
-    timeSlider.createTimeStopsByTimeInterval(timeExtent,7,res);
+    timeSlider.createTimeStopsByTimeInterval(timeExtent,1,res);
     
     var timeStops = [];
     var times = [];
