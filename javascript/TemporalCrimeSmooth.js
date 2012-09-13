@@ -10,7 +10,7 @@
       var crimeLayer;
       
       function init() {
-        var startExtent = new esri.geometry.Extent({"xmin":-8381753.575299095,"ymin":4864602.340301298,"xmax":-8342635.093809094,"ymax":4896425.59837099,"spatialReference":{"wkid":102100}});
+        var startExtent = new esri.geometry.Extent({"xmax": -8321453.398478151, "xmin": -8418757.735485049, "ymax": 4878182.639973416, "ymin": 4828345.697531548,"spatialReference":{"wkid":102100}});
         var map = new esri.Map("map", {extent:startExtent});
         
         var layers = [];
@@ -62,20 +62,12 @@
         map.addLayers(layers);
         dojo.connect(map,"onLayersAddResult",initSlider);
 
-        
-        // var highlightSymbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_SOLID, 10,
-        //                            new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,
-        //                            new dojo.Color([255,0,0]), 1),
-        //                            new dojo.Color([0,255,0,0.25]));
-
-
-
-        //listen for when the onMouseOver event fires on the countiesGraphicsLayer
         //when fired, create a new graphic with the geometry from the event.graphic and add it to the maps graphics layer
         dojo.connect(crimeLayer, "onMouseOver", openDialog);
         dojo.connect(crimeLayer, "onMouseOut", closeDialog);
-        
+        //dojo.connect(map, "onExtentChange", showExtent);
       }
+      
       function openDialog(evt){
         closeDialog();
 
