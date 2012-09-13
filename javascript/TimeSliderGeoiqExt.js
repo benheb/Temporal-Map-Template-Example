@@ -83,6 +83,8 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
   
   initSlider: function() {
     this.inherited(arguments);
+    this.features = timeSlider.features;
+    this.fullTimeExtent = timeSlider.fullTimeExtent;
     this._wire();
     this._isPlaying = false;
     this._isDragging = false;
@@ -127,6 +129,10 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
   _wire: function() {
     var self = this;
     
+    dojo.NodeList.prototype.hover = function(over, out){
+      return this.onmouseenter(over).onmouseleave(out || over);
+    }
+    
     var play = dojo.byId("play");
     dojo.connect(play, "onclick", function(e) {
       self._onPlay();
@@ -152,19 +158,70 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
       self.setPlayMode( event.target.value );
     });
     
-    // dojo.connect(crimeLayer, "onMouseOver", openDialog);
-    dojo.byId( "resolutionChooser" ).style.display = "none";
-    var focuscharthold = dojo.byId( "focusChartHolder" ); 
-    dojo.connect(focuscharthold, "onMouseOver", function() {
-      dojo.byId( "resolutionChooser" ).style.display = "block";
+    dojo.query( "#resolutionChooser" ).onclick( function( event ) {
+      
+      if ( dojo.hasClass( event.target, 'ui-state-disabled' ) ) return;
+      
+      // hide the current set
+      self.focusBarSets[ self.focusResolution ].hide();
+      self.focusResolution = event.target.id;
+      self._resolutionDirty = true;
+      
+      // if we have the bins, just set resolution and draw
+      //if ( self._bins[ self.focusResolution ] )
+      //{
+      self._recalculateBins(self.focusResolution);
+      self._addBins(timeSlider.bins, self.focusResolution);
+      self._updateFocusChart();
+   
+     dojo.query( "#resolutionChooser button.ui-state-active" ).removeClass( "ui-state-active" );
+     dojo.query( "div#resolutionChooser button#"+ self.focusResolution).addClass( "ui-state-active" );
     });
+  
     
-    dojo.connect(focuscharthold, "onMouseOut", function() {
-      dojo.byId( "resolutionChooser" ).style.display = "none";
-    });
+    dojo.byId( "resolutionChooser" ).style.display = "none";
+    dojo.query(".focusChart").hover(function(e){ dojo.byId( "resolutionChooser" ).style.display = "block"; }, function(e){ dojo.byId( "resolutionChooser" ).style.display = "none"; });
+    
   },
   
-  _onTemporalReady: function( ) {
+  _recalculateBins: function(res) {
+    var self = this;
+    timeSlider.bins = [];
+    var timeExtent = this.fullTimeExtent,
+        features = self.features;
+        
+    timeSlider.createTimeStopsByTimeInterval(timeExtent,7,res);
+    
+    var timeStops = [];
+    var times = [];
+    for(i=0;i<timeSlider.timeStops.length-1;i++) {
+      timeStops[i] = timeSlider.timeStops[i].getTime();
+      timeSlider.bins.push({"count": 0, "timestamp": timeSlider.timeStops[i], 'utc': timeStops[i]});
+    }
+    
+    var test = 0;
+    var first_time = timeStops[0];
+    for(var i=0;i<features.length;i++) {
+      var fTime =  features[i].attributes.DISPATCH_DATE_TIME;
+      for(var j=0;j<=timeStops.length;j++) {
+        if (j != timeStops.length - 1) {
+          if (fTime >= first_time && fTime <= timeStops[j]) {
+            timeSlider.bins[j-1].count++;
+          };
+        } else {
+          if (fTime >= first_time && fTime <= timeStops[j]) {
+            timeSlider.bins[j-1].count++;
+          };
+        }
+        if(j == timeStops.length) {
+          if(fTime >= timeStops[timeStops.length]) timeSlider.bins[j-1].count++;
+        }
+        first_time = timeStops[j];
+      };
+    };
+  },
+  
+ _onTemporalReady: function( ) {
     var bins = timeSlider.bins;
     var res = timeSlider._timeIntervalUnits;
     this.overviewResolution = res;
@@ -185,6 +242,8 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
     
     this._timespanDirty = true;
     this._updateFocusRepresentations( true );
+    dojo.query( "#resolutionChooser button#"+this.focusResolution ).addClass( "ui-state-active" );
+    
   },
   
   setPlayMode : function( mode ) {
@@ -287,7 +346,7 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
           
           processedBins.push(bins[i]);
         };
-
+        
         this._bins[resolution] = processedBins;
         this._maxCounts[resolution] = max;
       },
@@ -575,23 +634,15 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
         });
     },
     
-    _updateFocusResolutions : function()
-    {
+    _updateFocusResolutions : function() {
       var self = this;
-      
-      //jq.each( this._resolutions, function( res, ms )
-      for(i=0;i<this._resolutions.length;i++) {
-        var binsInFocus = ( self.focusTimespan.max - self.focusTimespan.min ) / i;
-        
-        var $button = dojo.byId( "resolutionChooser button#"+this._resolutions[i]); // [value='" + res + "']" )
-          
+      for(var res in this._resolutions) {
+        var binsInFocus = ( self.focusTimespan.max - self.focusTimespan.min ) / this._resolutions[res];
+        var $button = dojo.query( "#resolutionChooser button#"+res); // [value='" + res + "']" )
         // get the button
-        if ( binsInFocus < 1 || binsInFocus > self.options.maxFocusBins )
-        {
+        if ( binsInFocus < 1 || binsInFocus > self.options.maxFocusBins ) {
           $button.addClass( "ui-state-disabled" );
-        }
-        else if ( $button.hasClass( "ui-state-disabled" ) )
-        {
+        } else {
           $button.removeClass( "ui-state-disabled" );
         }
       };
@@ -857,13 +908,13 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
       this._timer.start();
       this.onPlay(this._sliderToTimeExtent());
       this._updateFocusIndicators();
-      //this._timespanDirty = true;
+      this._timespanDirty = true;
       this._updateFocusRepresentations();
     } else {
       this._timer.stop();
       this.onPause(this._sliderToTimeExtent());
       this._updateFocusIndicators();
-      //this._timespanDirty = true;
+      this._timespanDirty = true;
       this._updateFocusRepresentations();
     }
     var val = this._getSliderValue();

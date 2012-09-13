@@ -145,6 +145,7 @@
       }
       
       function calculateBins() {
+        timeSlider.features = crimeLayer.graphics
         var timeStops = [];
         var times = [];
         for(i=0;i<timeSlider.timeStops.length-1;i++) {

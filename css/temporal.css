@@ -1,6 +1,14 @@
 body {
   background: #FEFEFE !important;
 }
+
+.dijitSliderRightBumper {
+  display:none !important;
+}
+.dijitSliderLeftBumper {
+  display:none !important;
+}
+
 .claro .dijitToolbar .dijitButtonNode {
   color: #444444 !important;
 }
