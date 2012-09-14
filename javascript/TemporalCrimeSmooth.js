@@ -8,6 +8,7 @@
 
       var timeSlider; 
       var crimeLayer;
+      var categories;
       
       function init() {
         var startExtent = new esri.geometry.Extent({"xmax": -8321453.398478151, "xmin": -8418757.735485049, "ymax": 4878182.639973416, "ymin": 4828345.697531548,"spatialReference":{"wkid":102100}});
@@ -27,7 +28,7 @@
         var markerOpacity = 180;
         
         var categoryColors = {red: [215, 0, 0, markerOpacity], green: [34, 150, 94, markerOpacity], blue: [51, 137, 186, markerOpacity]}
-        var categories = [{code: 100, label: "Homicide", color: "red"},
+        categories = [{code: 100, label: "Homicide", color: "red"},
                           {code: 200, label: "Sexual Assault", color: "red"},
                           {code: 300, label: "Robbery", color: "blue"},
                           {code: 400, label: "Assault", color: "red"},
@@ -70,16 +71,24 @@
       
       function openDialog(evt){
         closeDialog();
-
+        
+        var type;
+        dojo.forEach(categories, function(cat,i) {
+          if (cat.code == evt.graphic.attributes.UCRHundred) {
+            type = cat['label'];
+            return;            
+          }
+        })
+        
         var dialog = new dijit.TooltipDialog({
           id: "tooltipDialog",
           style: "position: absolute; width: 250px; font: normal normal normal 10pt Helvetica;z-index:100"
         });
         dialog.startup();
 
-        var t = "<b>${UCRHundred}</b><hr><b>Stolen Value: </b>${STOLEN_VALUE:NumberFormat}<br/>"
+        var t = "<b>Type: </b>"+type+"<br /><hr><b>Stolen Value: </b>${STOLEN_VALUE:NumberFormat}<br/>"
                          + "<b>Recovered Value: </b>${RECOVERED_VALUE:NumberFormat}<br/>"
-                         + "<b>Locations: </b>${LOCATIONS}";
+                         + "<b>Locations: </b>${LOCATION}<br />"
 
         var content = esri.substitute(evt.graphic.attributes,t);
 
