@@ -21,8 +21,6 @@ body {
 }
 #timeSliderDiv {
   left: 7px !important;
-  position:absolute;
-  bottom: 41px !important;
 }
 div#chartsContainer {
   width: 100%;
