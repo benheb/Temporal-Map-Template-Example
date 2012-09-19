@@ -91,6 +91,15 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
     
     this.features = timeSlider.features;
     this.fullTimeExtent = timeSlider.fullTimeExtent;
+    
+    this.inherited(arguments);
+    
+    this._timer = new dojox.timing.Timer();
+    this._timer.setInterval(this.thumbMovingRate);
+    this._timer.onTick = dojo.hitch(this, "_bumpSlider", 1);
+    this._createSlider();
+    
+    
     this._wire();
     this._isPlaying = false;
     this._isDragging = false;
@@ -209,7 +218,7 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
     var test = 0;
     var first_time = timeStops[0];
     for(var i=0;i<features.length;i++) {
-      var fTime =  features[i].attributes.DISPATCH_DATE_TIME;
+      var fTime = isNaN(features[i].attributes[timeSlider.timeField]) ? new Date(features[i].attributes[timeSlider.timeField]).getTime() : features[i].attributes[timeSlider.timeField];
       for(var j=0;j<=timeStops.length;j++) {
         if (j != timeStops.length - 1) {
           if (fTime >= first_time && fTime <= timeStops[j]) {
@@ -900,6 +909,7 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
   
   _onHorizontalChange: function() {
     var timeExtent = this._sliderToTimeExtent();
+    console.log('Seems to die here, calling "onTimeExtentChange", here is timeExtent that is passed: ', timeExtent)
     this.onTimeExtentChange(timeExtent);
     this._updateFocusIndicators();
     this._timespanDirty = true;
@@ -1112,6 +1122,7 @@ dojo.declare("myModules.TimeSliderGeoiqExt", [dijit._Widget, dijit._Templated], 
       id: "ts",
       dir: node.dir
     };
+    
     
     var ts = dojo.create("div", {
       id: "ts"
