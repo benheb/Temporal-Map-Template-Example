@@ -166,6 +166,7 @@
         var features = crimeLayer.graphics;
         var test = 0;
         var first_time = timeStops[0];
+        console.log('features[i].attributes[timeSlider.timeField];', features[1].attributes[timeSlider.timeField])
         for(var i=0;i<features.length;i++) {
           var fTime =  features[i].attributes[timeSlider.timeField];
           for(var j=0;j<=timeStops.length;j++) {

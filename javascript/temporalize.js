@@ -11,7 +11,7 @@
       var categories;
       
       function init() {
-        var startExtent = new esri.geometry.Extent({"xmax": 1.960581883816271E7, "xmin": -1.7598910181624554E7, "ymax": 1.0240227701272735E7, "ymin":-5528356.572032796,"spatialReference":{"wkid":102100}});
+        var startExtent = new esri.geometry.Extent({"xmax": -1809428.3126246613,"xmin": -14293735.268382609,"ymax": 6308647.171301952,"ymin": -393351.46874051995,"spatialReference":{"wkid":102100}});
         var map = new esri.Map("map", {extent:startExtent});
         
         var layers = [];
@@ -28,7 +28,8 @@
         tweetLayer = new esri.layers.FeatureLayer("http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer/0"
                                                     , { mode: esri.layers.FeatureLayer.MODE_SNAPSHOT 
                                                     , outFields: ["*"]});
-        
+        //old: http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer/0
+        http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer
         tweetLayer.maxRecordCount = 100000;
 
         // Styling the Categories
@@ -80,6 +81,11 @@
         //dojo.connect(tweetLayer, "onMouseOver", openDialog);
         //dojo.connect(tweetLayer, "onMouseOut", closeDialog);
         //dojo.connect(map, "onExtentChange", showExtent);
+        dojo.connect(map, "onExtentChange", showExtent);
+      }
+      
+      function showExtent(extent) {
+        console.log('extent', extent)
       }
       
       function openDialog(evt){
@@ -129,17 +135,16 @@
         map.setTimeSlider(timeSlider);
         var timeExtent = new esri.TimeExtent();
         timeExtent.startTime = new Date("2011/08/27 23:26:26 UTC");
-        timeExtent.endTime = new Date("2011/08/28 08:43:01 UTC");
+        timeExtent.endTime = new Date("2011/08/28 13:43:01 UTC");
         //timeExtent.startTime = new Date("2002/06/01 00:04:00 UTC");
         //timeExtent.endTime = new Date("2002/06/29 23:59:00 UTC");
         timeSlider.setThumbCount(2);
-        timeSlider.createTimeStopsByTimeInterval(timeExtent,1,'esriTimeUnitsMinutes');
+        timeSlider.createTimeStopsByTimeInterval(timeExtent,1,'esriTimeUnitsHours');
         timeSlider.setThumbIndexes([0,5]);
         timeSlider.setThumbMovingRate(200);
         timeSlider.numberBins = timeSlider.timeStops.length-1;
         timeSlider.bins = [];
-        //timeSlider.timeField = 'DISPATCH_DATE_TIME';
-        timeSlider.timeField = 'SentAt2';
+        timeSlider.timeField = 'SentDate';
         //timeSlider.startup(); 
         
         //wait until features array as length, then calculate bins
@@ -149,27 +154,11 @@
             return;
           } 
           // else
-          
-          console.log('number of bins to calculate: ', tweetLayer.graphics.length)
           calculateBins();
         }, 0)
         
-        //add labels for every other time stop
-        /*var labels = dojo.map(timeSlider.timeStops, function(timeStop,i){ 
-          if(i%2 === 0){
-            return timeStop.getUTCHours(); }
-          else{
-            return "";
-          }
-        });*/      
         labels = null;
         timeSlider.setLabels(labels);
-        
-        /*dojo.connect(timeSlider, "onTimeExtentChange", function(timeExtent) {
-          var startValString = timeExtent.startTime.getUTCFullYear();
-          var endValString = timeExtent.endTime.getUTCFullYear();
-          //dojo.byId("daterange").innerHTML = "<i>" + startValString + " and " + endValString  + "<\/i>";
-        });*/
       }
       
       function calculateBins() {
@@ -184,20 +173,22 @@
         var features = tweetLayer.graphics;
         var test = 0;
         var first_time = timeStops[0];
+        
         for(var i=0;i<features.length;i++) {
-          var fTime = new Date(features[i].attributes[timeSlider.timeField]).getTime();
+          var fTime = features[i].attributes[timeSlider.timeField];
           for(var j=0;j<=timeStops.length;j++) {
+            var val = timeSlider.bins[j-1] ? j-1 : j;
             if (j != timeStops.length - 1) {
               if (fTime >= first_time && fTime <= timeStops[j]) {
-                timeSlider.bins[j-1].count++;
+                timeSlider.bins[val].count++;
               };
             } else {
               if (fTime >= first_time && fTime <= timeStops[j]) {
-                timeSlider.bins[j-1].count++;
+                timeSlider.bins[val].count++;
               };
             }
             if(j == timeStops.length) {
-              if(fTime >= timeStops[timeStops.length]) timeSlider.bins[j-1].count++;
+              if(fTime >= timeStops[timeStops.length]) timeSlider.bins[val].count++;
             }
             first_time = timeStops[j];
           };
