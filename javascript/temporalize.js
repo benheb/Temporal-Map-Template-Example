@@ -140,7 +140,7 @@
         //timeExtent.endTime = new Date("2002/06/29 23:59:00 UTC");
         timeSlider.setThumbCount(2);
         timeSlider.createTimeStopsByTimeInterval(timeExtent,1,'esriTimeUnitsHours');
-        timeSlider.setThumbIndexes([0,5]);
+        timeSlider.setThumbIndexes([0,2]);
         timeSlider.setThumbMovingRate(200);
         timeSlider.numberBins = timeSlider.timeStops.length-1;
         timeSlider.bins = [];
