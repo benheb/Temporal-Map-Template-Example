@@ -78,8 +78,8 @@
         dojo.connect(map,"onLayersAddResult",initSlider);
 
         //when fired, create a new graphic with the geometry from the event.graphic and add it to the maps graphics layer
-        //dojo.connect(tweetLayer, "onMouseOver", openDialog);
-        //dojo.connect(tweetLayer, "onMouseOut", closeDialog);
+        dojo.connect(tweetLayer, "onMouseOver", openDialog);
+        dojo.connect(tweetLayer, "onMouseOut", closeDialog);
         //dojo.connect(map, "onExtentChange", showExtent);
         dojo.connect(map, "onExtentChange", showExtent);
       }
@@ -91,24 +91,19 @@
       function openDialog(evt){
         closeDialog();
         
-        var type;
-        dojo.forEach(categories, function(cat,i) {
-          if (cat.code == evt.graphic.attributes.UCRHundred) {
-            type = cat['label'];
-            return;            
-          }
-        })
-        
         var dialog = new dijit.TooltipDialog({
           id: "tooltipDialog",
           style: "position: absolute; width: 250px; font: normal normal normal 10pt Helvetica;z-index:100"
         });
         dialog.startup();
 
-        var t = "<b>Type: </b>"+type+"<br /><hr><b>Stolen Value: </b>${STOLEN_VALUE:NumberFormat}<br/>"
-                         + "<b>Recovered Value: </b>${RECOVERED_VALUE:NumberFormat}<br/>"
-                         + "<b>Locations: </b>${LOCATION}<br />"
+        //var t = "<b>Type: </b>"+type+"<br /><hr><b>Stolen Value: </b>${STOLEN_VALUE:NumberFormat}<br/>"
+        //                 + "<b>Recovered Value: </b>${RECOVERED_VALUE:NumberFormat}<br/>"
+        //                 + "<b>Locations: </b>${LOCATION}<br />"
 
+        var t = '<b>Username</b>: ${userscreen} <br />'
+                 + '<b>Sent</b>: ${SentAt2}'
+        
         var content = esri.substitute(evt.graphic.attributes,t);
 
         // var highlightGraphic = new esri.Graphic(evt.graphic.geometry,highlightSymbol);
@@ -139,8 +134,8 @@
         //timeExtent.startTime = new Date("2002/06/01 00:04:00 UTC");
         //timeExtent.endTime = new Date("2002/06/29 23:59:00 UTC");
         timeSlider.setThumbCount(2);
-        timeSlider.createTimeStopsByTimeInterval(timeExtent,1,'esriTimeUnitsHours');
-        timeSlider.setThumbIndexes([0,2]);
+        timeSlider.createTimeStopsByTimeInterval(timeExtent,1,'esriTimeUnitsMinutes');
+        timeSlider.setThumbIndexes([0,50]);
         timeSlider.setThumbMovingRate(200);
         timeSlider.numberBins = timeSlider.timeStops.length-1;
         timeSlider.bins = [];
