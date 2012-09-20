@@ -29,46 +29,24 @@
                                                     , { mode: esri.layers.FeatureLayer.MODE_SNAPSHOT 
                                                     , outFields: ["*"]});
         //old: http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer/0
-        http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer
+        //http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer
+        
+        hurcnirene = new esri.layers.KMLLayer('http://geocommons.com/overlays/275854.kml', {id:"track"})
+        //layers.push(hurcnirene);
+        map.addLayer(hurcnirene);
+        console.log('hur', hurcnirene)
+        
+        var renderer = new esri.renderer.SimpleRenderer(
+          new esri.symbol.SimpleFillSymbol(
+            "solid",
+            null,
+            new dojo.Color([255, 0, 255, 0.75]) // fuschia lakes!
+          )
+        );
+        //map.getLayer("track").setRenderer(renderer);
+        
         tweetLayer.maxRecordCount = 100000;
-
-        // Styling the Categories
-        /*var markerOpacity = 180;
         
-        var categoryColors = {red: [215, 0, 0, markerOpacity], green: [34, 150, 94, markerOpacity], blue: [51, 137, 186, markerOpacity]}
-        categories = [{code: 100, label: "Homicide", color: "red"},
-                          {code: 200, label: "Sexual Assault", color: "red"},
-                          {code: 300, label: "Robbery", color: "blue"},
-                          {code: 400, label: "Assault", color: "red"},
-                          {code: 500, label: "Burglary", color: "green"},
-                          {code: 600, label: "Theft", color: "green"},
-                          {code: 700, label: "Stolen Vehicle", color: "green"}];
-
-        var renderer = new esri.renderer.UniqueValueRenderer({type: "uniqueValue",
-                                                              field1: "latitude",
-                                                              defaultSymbol: {
-                                                                color: [0, 0, 0, 64],
-                                                                outline: {color: [255, 255, 255, 255], width: 1, type: "esriSMS", style: "esriSMSNull"},
-                                                                type: "esriSMS",
-                                                                style: "esriSMSCircle"
-                                                              }});
-        dojo.map(categories, function(category, i) {
-            renderer.addValue({
-                value: category.code,
-                label: category.label,
-                symbol: { 
-                    color: categoryColors[category.color],
-                    outline: {color: [255, 255, 255, 255], width: 1, type: "esriSMS", style: "esriSMSCircle"},
-                    type: "esriSMS",
-                    style: "esriSMSCircle"} 
-            });
-        });
-        
-        
-        console.log('render: ', renderer)
-        
-        tweetLayer.setRenderer(renderer);
-        */
         console.log('tweet layer', tweetLayer)
         // end categorical styling
         layers.push(tweetLayer);
