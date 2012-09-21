@@ -27,7 +27,8 @@
         //                                                  , outFields: ["*"]});
         tweetLayer = new esri.layers.FeatureLayer("http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer/1"
                                                     , { mode: esri.layers.FeatureLayer.MODE_SNAPSHOT 
-                                                    , outFields: ["*"]});
+                                                    , outFields: ["*"]
+                                                    , id: "tweets"});
         //old: http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer/0
         //http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer
         
@@ -36,14 +37,7 @@
         //map.addLayer(hurcnirene);
         console.log('hur', hurcnirene)
         
-        var renderer = new esri.renderer.SimpleRenderer(
-          new esri.symbol.SimpleFillSymbol(
-            "solid",
-            null,
-            new dojo.Color([255, 0, 255, 0.75]) // fuschia lakes!
-          )
-        );
-        //map.getLayer("track").setRenderer(renderer);
+        
         
         tweetLayer.maxRecordCount = 100000;
         
@@ -116,8 +110,8 @@
         //timeExtent.startTime = new Date("2002/06/01 00:04:00 UTC");
         //timeExtent.endTime = new Date("2002/06/29 23:59:00 UTC");
         timeSlider.setThumbCount(2);
-        timeSlider.createTimeStopsByTimeInterval(timeExtent,1,'esriTimeUnitsMinutes');
-        timeSlider.setThumbIndexes([0,50]);
+        timeSlider.createTimeStopsByTimeInterval(timeExtent,1,'esriTimeUnitsHours');
+        timeSlider.setThumbIndexes([0,2]);
         timeSlider.setThumbMovingRate(200);
         timeSlider.numberBins = timeSlider.timeStops.length-1;
         timeSlider.bins = [];
