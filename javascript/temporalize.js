@@ -25,7 +25,7 @@
         //tweetLayer = new esri.layers.FeatureLayer("http://services.arcgis.com/bkrWlSKcjUDFDtgw/arcgis/rest/services/Irene_Tweets/FeatureServer/0"
         //                                                , { mode: esri.layers.FeatureLayer.MODE_SNAPSHOT 
         //                                                  , outFields: ["*"]});
-        tweetLayer = new esri.layers.FeatureLayer("http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer/0"
+        tweetLayer = new esri.layers.FeatureLayer("http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer/1"
                                                     , { mode: esri.layers.FeatureLayer.MODE_SNAPSHOT 
                                                     , outFields: ["*"]});
         //old: http://ec2-23-22-185-186.compute-1.amazonaws.com:6080/arcgis/rest/services/IreneTwitter/MapServer/0
@@ -33,7 +33,7 @@
         
         hurcnirene = new esri.layers.KMLLayer('http://geocommons.com/overlays/275854.kml', {id:"track"})
         //layers.push(hurcnirene);
-        map.addLayer(hurcnirene);
+        //map.addLayer(hurcnirene);
         console.log('hur', hurcnirene)
         
         var renderer = new esri.renderer.SimpleRenderer(
@@ -46,6 +46,10 @@
         //map.getLayer("track").setRenderer(renderer);
         
         tweetLayer.maxRecordCount = 100000;
+        
+        //define a selection symbol for the feature layer
+        var symbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_SQUARE, 12, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([247, 0, 171, 0.9]), 2), new dojo.Color([247, 0, 171, 0.5]));
+        tweetLayer.setSelectionSymbol(symbol);
         
         console.log('tweet layer', tweetLayer)
         // end categorical styling
@@ -79,8 +83,8 @@
         //                 + "<b>Recovered Value: </b>${RECOVERED_VALUE:NumberFormat}<br/>"
         //                 + "<b>Locations: </b>${LOCATION}<br />"
 
-        var t = '<b>Username</b>: ${userscreen} <br />'
-                 + '<b>Sent</b>: ${SentAt2}'
+        var t = '<b>Username</b>: ${userscreen_name} <br />'
+                 + '<b>Sent</b>: ${created_at}'
         
         var content = esri.substitute(evt.graphic.attributes,t);
 
